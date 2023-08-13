@@ -1,3 +1,9 @@
+-- Working on client side
+
+-- If clayVoid has parts which are will changed somehow, put clayVoid into model and parts to Folder with name "Debris"
+
+local remotes = game:GetService('ReplicatedStorage').Remotes
+local binds = game:GetService('ReplicatedStorage').Binds
 
 local Modules = game:GetService('ServerScriptService').Modules
 local ClayPowers = require(Modules.ClayPowers)
@@ -12,7 +18,6 @@ function ClayVoid.new(instance)
 
     self.Instance = instance
     self.Color = self.Instance.Color
-    self.Activated = false
     self.Cost = self:GetVolume(self.Instance)
     self.Power = self:GetPower()
     self.Instance.Transparency = .5
@@ -23,7 +28,7 @@ end
 
 function ClayVoid:Init()
     print('ClayVoid init')
-    
+    self.Instance:SetAttribute('Activated', false)
 end
 
 function ClayVoid:GetPower()
@@ -33,6 +38,7 @@ end
 
 function ClayVoid:StartPower()
     self.Power(self.Instance)
+    -- remotes.setMoney:FireClient
 end
 
 function ClayVoid:ChangeChildClay(childClay)
@@ -47,17 +53,22 @@ function ClayVoid:UpgradeClay()
     local childClay = self.Instance:FindFirstChildIsA('Part')
     if childClay then
         self:ChangeChildClay(childClay)
-        self:Activated(childClay)
+        if self:GetVolume(childClay) >= self:GetVolume(self.Instance) then
+            self:Activated(childClay)
+        end
     else
         Clay.new(self.Instance, Vector3.new(0.5, 0.5, 0.5), true, self.Color)
     end
 end
 
-function ClayVoid:Activated(childClay)
-    if self:GetVolume(childClay) >= self:GetVolume(self.Instance) then
+function ClayVoid:ShowActivated()
+    -- this is function shows particles
+end
+
+function ClayVoid:Activated(childClay) 
         childClay:Destroy()
+        self.Instance:SetAttribute('Activated', true)
         self:StartPower()
-    end
 end
 
 function ClayVoid:GetVolume(instance)

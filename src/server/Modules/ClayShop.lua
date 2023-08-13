@@ -1,3 +1,4 @@
+-- Working on client side
 local ClayShop = {}
 
 ClayShop.__index = ClayShop
@@ -11,7 +12,10 @@ function ClayShop.new(instance)
 end
 
 function ClayShop:Init()
-    -- self.Button =
+    self.Button = self.Model:FindFirstChild('shopButton')
+    self.Button.Triggered:Connect(function()
+        
+    end)
 end
 
 return ClayShop
